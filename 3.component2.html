@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.元件2</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="button" value="漲價" @click="changePrice">
+
+        <!-- 用標籤屬性將資料傳入元件
+        price="1000" => 資料型態是文字
+        :price="1000" => 資料型態是數字
+        布林值只要寫名字就好，有寫就是true，沒寫就是false -->
+        <Card title="Vue" img="https://github.com/vuejs.png" :price="1000" sell></Card>
+        <Card v-for="product in products" :img="product.img" :title="product.title" :price="product.price"
+            :sell="product.sell"></Card>
+        <!--下方為快速寫法 
+            當資料物件的key和元件的props名稱完全相同時，可以使用v-bind一次綁定 -->
+        <Card v-for="product in products" v-bind="product"></Card>
+
+    </div>
+
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.27/vue.global.min.js
+        integrity="sha512-jDpwxJN+g4BhXLdba5Z1rn2MpR9L5Wp3WVf2dJt5A0mkPHnHLZHZerpyX4JC9bM0pkCL7RmAR8FwOm02h7RKFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/x-template" id="card">
+        <div class=card>
+            <!-- 加:才能跟下面的東西做綁定 -->
+            <img :src="img" height="100">
+            <h1>{{title}}</h1>
+            <p>{{price}}</p>
+            <p v-if="!sell">已下架</p>
+            <input type="button" value='看資訊' @click="info">
+        </div>
+    </script>
+
+    <script>
+        const { reactive, toRef, toRefs } = Vue
+
+        Vue.createApp({
+            setup() {
+                // 商品的資料
+                const products = reactive([
+                    { img: 'https://github.com/twbs.png', title: 'Boostraps', price: 1000, sell: true },
+                    { img: 'https://github.com/wdaweb.png', title: 'wdaweb', price: 2000, sell: false },
+
+                ])
+
+                const changePrice = () => {
+                    for (const product of products) {
+                        product.price *= 2
+                    }
+                }
+                return {
+                    products,
+                    changePrice
+                }
+            }
+        })
+            .component('Card', {
+                template: '#card',
+                // 定義元件接收的資料名稱
+                // props: ['img', 'title', 'price', 'sell']
+                props: {
+                    // 可以指定資料型態
+                    sell: Boolean,
+                    // 指定資料型態的另一種寫法
+                    price: {
+                        type: Number
+                    },
+                    img: {
+                        type: String,
+                        // 指定必填（一定要有）
+                        required: true
+                    },
+                    title: {
+                        type: String,
+                        // 指定預設值
+                        default() {
+                            return '商品'
+                        },
+                        // 自訂驗證
+                        validator(value) {
+                            return value.length > 2
+                        }
+                    }
+                },
+                /* 選項式寫法
+                    methods: {
+                    info() {
+                    // 選項式用this.props的名 來取東西
+                    console.log(this.price)
+                        }
+                    }*/
+
+                setup(props) {
+                    /* 直接解構props會失去響應性
+                    （導致顯示在網頁上的數字和props裡面的數字不同步）*/
+                    const { price } = props
+
+                    // 解決辦法如下：
+                    //解構需要toRef或toRefs維持響應性
+                    // 轉成 ref 後使用需加 .value
+                    const { price: priceRefs } = toRefs(props)
+                    const priceRef = toRef(props, 'price')
+
+                    const info = () => {
+                        console.log('props.price', props.price)
+                        console.log('price', price)
+                        console.log('priceRefs', priceRefs.value)
+                        console.log('priceRef', priceRef.value)
+                    }
+                    return { info }
+                }
+            })
+            .mount('#app')
+    </script>
+</body>
+
+</html>

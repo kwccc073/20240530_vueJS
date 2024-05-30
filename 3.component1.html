@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.元件1</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 直接把元件名稱當HTML標籤用 -->
+        <Counter></Counter>
+        <Counter></Counter>
+        <Counter></Counter>
+        <Counter></Counter>
+        <Counter></Counter>
+    </div>
+
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.27/vue.global.min.js
+        integrity="sha512-jDpwxJN+g4BhXLdba5Z1rn2MpR9L5Wp3WVf2dJt5A0mkPHnHLZHZerpyX4JC9bM0pkCL7RmAR8FwOm02h7RKFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!--  是一種在 HTML 中定義模板的方式 
+    一定要有type="text/x-template"-->
+    <!-- 這個 script 標籤使用了一個特殊的 type，text/x-template，這告訴瀏覽器這個 script 元素的內容不應該被執行，而是應該被視為一個模板。 -->
+    <script type="text/x-template" id="counter">
+        <input type="button" :value="num" @click="num++">
+    </script>
+
+    <script>
+        const { ref } = Vue
+        /*  
+        const app = Vue.createApp({})
+        app.component({})
+        app.mount('#app')
+        上下是一樣的意思    
+        Vue.createApp({})
+            .component({})
+            .mount('#app')*/
+        Vue.createApp({})
+            // .component({})是定義元件
+            .component('Counter', {
+                /* 可以直接打HTML或指定id
+                元件名稱通常第一個字會大寫，避免與HTML衝突*/
+                // template:<input type="button" :value="num" @click="num++">
+                template: '#counter',
+                /* data(){
+                    return{
+                        num:0
+                    }
+                }*/
+                setup() {
+                    const num = ref(0)
+                    return { num }
+                }
+            })
+            .mount('#app')
+
+        // 
+    </script>
+</body>
+
+</html>

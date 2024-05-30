@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>組合式list寫法</title>
+</head>
+
+<body>
+    <!-- 此檔為0530的list之另一種寫法 -->
+    <div id="app">
+        <form @submit.prevent="addItem">
+            <input type="text" v-model="input" :style="{border: inputBorder}">
+            <input type="submit" value="新增">
+        </form>
+        <hr>
+        搜尋： <input type="text" v-model="search">
+        <hr>
+        <ul>
+            <li v-for="item in filteredItems">
+                <input type="checkbox" v-model="item.done">
+                <del v-if="item.done">{{item.text}}</del>
+                <span v-else> {{item.text}}</span>
+                <input type="button" value="x" @click="delItem(item.id)">
+            </li>
+        </ul>
+
+    </div>
+
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.27/vue.global.min.js
+        integrity="sha512-jDpwxJN+g4BhXLdba5Z1rn2MpR9L5Wp3WVf2dJt5A0mkPHnHLZHZerpyX4JC9bM0pkCL7RmAR8FwOm02h7RKFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // 組合式不用加this
+
+        // 解構，如果不解構的話需要寫很多vue.
+        const { ref, reactive, computed, watch, onMounted, createApp } = Vue
+
+        // 不解構要這樣寫：Vue.createApp
+        createApp({
+            // setup 函數：組件中所有組合式 API 的入口。
+            setup() {
+                // ref: 所有資料型態都能用，使用時加.value，不會深層監聽陣列物件
+                // reactive: 只有陣列物件可以用，不用加.value，可以深層監聽
+                const input = ref('')
+                const items = reactive([])
+                // 搜尋欄用
+                const search = ref('')
+
+                // 上方的HTML不會用到id，所以不需要響應式，也不需要return
+                let id = 1
+
+                const inputBorder = computed(() => {
+                    if (input.value.length === 0) return '5px solid black'
+                    else if (input.value.length < 2) return '5px solid red'
+                    else return '5px solid green'
+                })
+
+                const filteredItems = computed(() => {
+                    return items.filter(item => {
+                        return item.text.includes(search.value)
+                    })
+                })
+
+                // 新增清單
+                const addItem = () => {
+                    if (input.value.length < 2) return
+                    items.push({ done: false, text: input.value, id: id++ })
+                    // 清空輸入欄位
+                    input.value = ''
+                }
+
+                // 刪除清單
+                const delItem = (id) => {
+                    // .findIndex()用於找到陣列中符合提供的測試函數的第一個元素的索引。
+                    const i = items.findIndex(item => {
+                        return item.id === id
+                    })
+                    // .splice(i,1)從索引i刪除一個元素
+                    items.splice(i, 1)
+                }
+
+                onMounted(() => {
+                    const itemsJson = JSON.parse(localStorage.vueTodo || [])
+                    // 不能寫 items= itemsJson，因為items是用const宣告
+
+                    /* items.splice(目標索引, 刪除數量,插入項目1,插入項目二 ...)
+                    從索引第0個, 刪除0個東西, 插入要放入的東西
+                    items.splice(0, 0, ...itemsJson)*/
+
+                    /* 另一種寫法－物件合併：
+                    .assign(A, B)是將B合併到A的裡面 */
+                    Object.assign(items, itemsJson)
+
+
+                    if (items.length > 0) {
+                        id = items[items.length - 1].id + 1
+                    }
+                })
+
+                // watch 只能用ref或reactive
+                watch(items, (newValue) => {
+                    localStorage.vueTodo = JSON.stringify(newValue)
+                })
+
+                // 原則：上面HTML會用到的所有變數就要return ***重要***
+                return {
+                    input,
+                    items,
+                    search,
+                    inputBorder,
+                    filteredItems,
+                    addItem,
+                    delItem,
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>

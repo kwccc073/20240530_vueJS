@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>組合式-ref</title>
+</head>
+
+<body>
+    <div id="app">
+        <h1 ref="title">aaa</h1>
+        <input type="button" :value="num" @click="plus" ref="btn">
+    </div>
+
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.27/vue.global.min.js
+        integrity="sha512-jDpwxJN+g4BhXLdba5Z1rn2MpR9L5Wp3WVf2dJt5A0mkPHnHLZHZerpyX4JC9bM0pkCL7RmAR8FwOm02h7RKFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // 解構
+        const { ref, onMounted, nextTick } = Vue
+
+        Vue.createApp({
+            setup() {
+                // 這裡要寫和HTML裡的ref一樣的
+                // 預設值是null，若有抓到就會有東西
+                const title = ref(null)
+                const btn = ref(null)
+
+                const num = ref(0)
+                const plus = async () => {
+                    num.value++
+                    /* 第一個.value是指到input元素
+                        第二個.value是指到input 元素的 value 屬性*/
+                    console.log(btn.value.value)
+                    await nextTick()
+                    console.log(btn.value.value)
+                }
+
+                onMounted(() => {
+                    console.log(title.value.innerText)
+                })
+
+                return {
+                    title,
+                    btn,
+                    num,
+                    plus
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
