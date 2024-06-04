@@ -104,7 +104,7 @@
                     const { price } = props
 
                     // 解決辦法如下：
-                    //解構需要toRef或toRefs維持響應性
+                    // 解構需要toRef或toRefs維持響應性
                     // 轉成 ref 後使用需加 .value
                     const { price: priceRefs } = toRefs(props)
                     const priceRef = toRef(props, 'price')
