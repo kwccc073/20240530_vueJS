@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3. component4</title>
+  <title>3. component4：provide、inject</title>
 </head>
 
 <body>
@@ -30,6 +30,7 @@
         // 提供一個名為 num 的資料，值是 num
         provide('number', number)
       },
+      // 選項式寫法-------------------------------
       // data () {
       //   return {
       //     number: 100
@@ -38,7 +39,9 @@
       // provide () {
       //   return {
       //     number: computed({
-      //       get: () => {
+      //       get: () => { 
+                  // 這裡一定要用箭頭函式，不然this會是函數本身而找不到東西
+                  // 箭頭函式沒有this，this會指到整個vue
       //         return this.number
       //       },
       //       set: (value) => {
@@ -61,6 +64,7 @@
 
           return { number, change }
         }
+      // 選項式寫法-------------------------------
         // inject: ['number'],
         // methods: {
         //   change () {

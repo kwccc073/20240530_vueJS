@@ -34,7 +34,7 @@
     <script>
         // 組合式不用加this
 
-        // 解構，如果不解構的話需要寫很多vue.
+        // 解構，如果不解構的話需要寫很多vue.XXX
         const { ref, reactive, computed, watch, onMounted, createApp } = Vue
 
         // 不解構要這樣寫：Vue.createApp
@@ -48,21 +48,24 @@
                 // 搜尋欄用
                 const search = ref('')
 
-                // 上方的HTML不會用到id，所以不需要響應式，也不需要return
+                // 上方的HTML不會用到id，所以不需要響應式（ref），也不需要return
                 let id = 1
 
+                // computed----------------------------------------------------------
                 const inputBorder = computed(() => {
                     if (input.value.length === 0) return '5px solid black'
                     else if (input.value.length < 2) return '5px solid red'
                     else return '5px solid green'
                 })
 
+                // 搜尋的過濾
                 const filteredItems = computed(() => {
                     return items.filter(item => {
                         return item.text.includes(search.value)
                     })
                 })
 
+                // 相當於組合式的的methods----------------------------------------------
                 // 新增清單
                 const addItem = () => {
                     if (input.value.length < 2) return
@@ -82,17 +85,17 @@
                 }
 
                 onMounted(() => {
+                    // 這裡面的變數名稱不能跟外層一樣
                     const itemsJson = JSON.parse(localStorage.vueTodo || [])
-                    // 不能寫 items= itemsJson，因為items是用const宣告
+                    /* 
+                    items = itemsJson （不可以這樣寫，因為items是用const宣告）
+                    改寫方法1 
+                    items.splice(0, 0, ...itemsJson) // items.splice(目標索引, 刪除數量,插入項目1,插入項目二 ...)，表示從索引第0個, 刪除0個東西, 要插入的東西
+                    */
 
-                    /* items.splice(目標索引, 刪除數量,插入項目1,插入項目二 ...)
-                    從索引第0個, 刪除0個東西, 插入要放入的東西
-                    items.splice(0, 0, ...itemsJson)*/
-
-                    /* 另一種寫法－物件合併：
-                    .assign(A, B)是將B合併到A的裡面 */
+                    /* 改寫方法2－物件合併：
+                    Object.assign(A, B)是將B合併到A的裡面 */
                     Object.assign(items, itemsJson)
-
 
                     if (items.length > 0) {
                         id = items[items.length - 1].id + 1
@@ -102,9 +105,10 @@
                 // watch 只能用ref或reactive
                 watch(items, (newValue) => {
                     localStorage.vueTodo = JSON.stringify(newValue)
+                    // 不用寫deep:true，因為reactive本來就有深層監聽
                 })
 
-                // 原則：上面HTML會用到的所有變數就要return ***重要***
+                // 上面HTML會用到的所有變數/function都要return ***重要***
                 return {
                     input,
                     items,

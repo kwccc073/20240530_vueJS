@@ -26,6 +26,10 @@
         Vue.createApp({
             setup() {
                 // 定義響應式數據（相當於data(){}）
+                /* 組合式語法中的data，改叫ref或reactive
+                    ref => 所有的資料型態都可以用，使用的時候要加上.value，陣列與物件不會深層監聽
+                    reactive => 只有陣列跟物件可以用，不用加.value，可以深層監聽
+                */
                 const data1 = ref('');
                 const data2 = ref([{}, {}, {}]);
 
@@ -50,6 +54,7 @@
                 onMounted(() => { });
 
                 return {
+                    // 所有會用到的東西都要return（只有在setup裡面會用到的則不用return）
                     data1, data2, fuction11, fuction12, fuction21, fuction22
                 };
 

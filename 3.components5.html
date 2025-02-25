@@ -10,15 +10,17 @@
 <body>
   <div id="app">
     <Btn></Btn>
+    <!-- 沒有名字的插槽（預設插槽）--------------------------------------------------------- -->
     <!-- 修改插槽內容 -->
     <Btn>Aaa</Btn>
     <Btn> <img src="https://github.com/vuejs.png" height="100"></Btn>
     <Btn>{{ text }}</Btn>
 
+    <!-- 有名字的插槽--------------------------------------------------------- -->
     <Card>
-      <!-- 沒有使用 template，就是預設插槽 -->
+      <!-- 沒有使用 template，就會放到預設插槽裡面 -->
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, quo.</p>
-      <!-- 指定要放入的插槽名稱 -->
+      <!-- template 指定要放入的插槽名稱 -->
       <!-- v-slot 的簡寫是 # -->
       <template v-slot:title>
         <h1>標題</h1>
@@ -28,17 +30,18 @@
       </template>
     </Card>
 
+    <!-- 範例3------------------------------------------------------------ -->
     <Product>
-      <!-- 預設插槽 -->
       <template #title="data">{{ data.productName }}</template>
 
+      <!-- 將data.price、data.info解構 -->
       <template #footer="{ price, info }">
         {{ price }}
         <input type="button" value="按鈕" @click="info">
       </template>
 
-      <!-- data是插槽提供的資料（data是自己取的） 
-        為區域變數 -->
+      <!-- 雖然是預設插槽，但因為下方模板的預設插槽有提供:content="content"，所以這裡也得用template -->
+      <!-- data是指插槽提供的資料、data為區域變數（data是自己取的），即下方的.component()裡的content-->
       <template v-slot="data">{{ data.content }}</template>
     </Product>
   </div>
@@ -52,8 +55,7 @@
     <button>
       按鈕
       <br>
-      <!-- slot插槽
-        插槽內的東西是預設內容 -->
+      <!-- slot內的東西是預設內容 -->
       <slot>123</slot>
     </button>
   </script>
@@ -73,12 +75,13 @@
     </div>
   </script>
 
-  <!-- 定義元件三 -->
+  <!-- 定義元件三－作用域插槽(Scoped Slot)：讓父元件可以取得子元件的資料 -->
+  <!-- 平常都是父元素決定要填什麼東西到子元件裡 -->
   <script type="text/x-template" id="product">
     <div class="product">
       <div class="product-title">
         <!-- :要提供的資料名稱="資料的值" -->
-        <!-- 插槽提供一個變數叫title，裡面的值是title -->
+        <!-- 插槽提供一個變數叫name，裡面的值是name -->
         <slot name="title" :product-name="name"></slot>
       </div>
       <div class="product-body">

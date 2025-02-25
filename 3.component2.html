@@ -4,22 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3.元件2</title>
+    <title>3.元件2 - 商品卡片</title>
 </head>
 
 <body>
     <div id="app">
         <input type="button" value="漲價" @click="changePrice">
 
-        <!-- 用標籤屬性將資料傳入元件
+        <!-- 寫成標籤屬性方式（屬性名稱就是props寫的）將資料傳入元件
         price="1000" => 資料型態是文字
         :price="1000" => 資料型態是數字
         布林值只要寫名字就好，有寫就是true，沒寫就是false -->
         <Card title="Vue" img="https://github.com/vuejs.png" :price="1000" sell></Card>
+
+        <!-- 使用v-for將資料綁訂到元件裡面 -->
         <Card v-for="product in products" :img="product.img" :title="product.title" :price="product.price"
             :sell="product.sell"></Card>
-        <!--下方為快速寫法 
-            當資料物件的key和元件的props名稱完全相同時，可以使用v-bind一次綁定 -->
+        <!--快速寫法： 當物件資料的key和元件的props名稱完全相同時，可以使用v-bind一次綁定 -->
         <Card v-for="product in products" v-bind="product"></Card>
 
     </div>
@@ -44,7 +45,7 @@
 
         Vue.createApp({
             setup() {
-                // 商品的資料
+                // 設定一些商品的資料
                 const products = reactive([
                     { img: 'https://github.com/twbs.png', title: 'Boostraps', price: 1000, sell: true },
                     { img: 'https://github.com/wdaweb.png', title: 'wdaweb', price: 2000, sell: false },
@@ -64,8 +65,9 @@
         })
             .component('Card', {
                 template: '#card',
-                // 定義元件接收的資料名稱
-                // props: ['img', 'title', 'price', 'sell']
+                // 定義元件要接收的資料（外部進來的資料）
+                // props: ['img', 'title', 'price', 'sell'] // 最簡單的寫法（只寫資料名稱）
+                // 複雜版寫法（物件）
                 props: {
                     // 可以指定資料型態
                     sell: Boolean,
@@ -75,8 +77,7 @@
                     },
                     img: {
                         type: String,
-                        // 指定必填（一定要有）
-                        required: true
+                        required: true // 指定必填（一定要接收到這個資料）
                     },
                     title: {
                         type: String,
@@ -90,28 +91,28 @@
                         }
                     }
                 },
-                /* 選項式寫法
+                /* 選項式寫法-------------------------------------------
                     methods: {
                     info() {
-                    // 選項式用this.props的名 來取東西
+                    // this.props的名字 => 取東西
                     console.log(this.price)
                         }
                     }*/
-
+                // 組合式寫法-------------------------------------------
+                // setup()裡面有兩個參數可以用：props、context（可簡寫為ctx）
                 setup(props) {
-                    /* 直接解構props會失去響應性
-                    （導致顯示在網頁上的數字和props裡面的數字不同步）*/
+                    // 直接解構props會失去響應性（導致顯示在網頁上的數字和props裡面的數字不同步）
                     const { price } = props
 
-                    // 解決辦法如下：
-                    // 解構需要toRef或toRefs維持響應性
-                    // 轉成 ref 後使用需加 .value
-                    const { price: priceRefs } = toRefs(props)
+                    // 解決辦法如下：解構需要toRef或toRefs維持響應性
+                    const { price: priceRefs } = toRefs(props) // 解構price，再重新命名為priceRefs
                     const priceRef = toRef(props, 'price')
 
                     const info = () => {
                         console.log('props.price', props.price)
                         console.log('price', price)
+                        
+                        // 使用toRefs 需加 .value
                         console.log('priceRefs', priceRefs.value)
                         console.log('priceRef', priceRef.value)
                     }
