@@ -26,5 +26,8 @@
 
 ### 從裡面修改外面資料 3.components3 (02:44:11)
 * emit (02:55:03)
+* 以v-model變成雙向綁定，使外層比較方便，但仍要emit (03:16:50)
+ * computed
+* 整個流程講解 (03:37:05)
 ### 3.components4 ()
 ### 3.components5 ()
