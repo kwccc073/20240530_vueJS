@@ -32,7 +32,7 @@
 
     <!-- 範例3------------------------------------------------------------ -->
     <Product>
-      <!-- #title="data" => 父元件接收插槽#title的資料，並將資料放在 data 物件中（data是自己取的）-->
+      <!-- #title="data" => 父元件接收插槽#title的資料，並將資料放在作用域變數 data 中（data是自己取的）-->
       <!-- data.productName => 取出data物件中的productName（對應到插槽#title裡的屬性product-name） -->
       <template #title="data">{{ data.productName }}</template>
 
@@ -76,7 +76,7 @@
     </div>
   </script>
 
-  <!-- 定義元件三－作用域插槽(Scoped Slot)：讓父元件可以取得子元件的資料 -->
+  <!-- 定義元件三－作用域插槽(Scoped Slot)：讓父元件可以取得子元件的資料來使用 -->
   <!-- 平常都是父元素決定要填什麼東西到子元件裡 -->
   <script type="text/x-template" id="product">
     <div class="product">
