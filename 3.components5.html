@@ -32,6 +32,8 @@
 
     <!-- 範例3------------------------------------------------------------ -->
     <Product>
+      <!-- #title="data" => 父元件接收插槽#title的資料，並將資料放在 data 物件中（data是自己取的）-->
+      <!-- data.productName => 取出data物件中的productName（對應到插槽#title裡的屬性product-name） -->
       <template #title="data">{{ data.productName }}</template>
 
       <!-- 將data.price、data.info解構 -->
@@ -41,7 +43,6 @@
       </template>
 
       <!-- 雖然是預設插槽，但因為下方模板的預設插槽有提供:content="content"，所以這裡也得用template -->
-      <!-- data是指插槽提供的資料、data為區域變數（data是自己取的），即下方的.component()裡的content-->
       <template v-slot="data">{{ data.content }}</template>
     </Product>
   </div>
@@ -80,8 +81,9 @@
   <script type="text/x-template" id="product">
     <div class="product">
       <div class="product-title">
-        <!-- :要提供的資料名稱="資料的值" -->
-        <!-- 插槽提供一個變數叫name，裡面的值是name -->
+        <!-- 若要在插槽內容中使用元件的本地資料，需用 v-bind 把資料「綁定」到插槽上-->
+        <!-- 定義具名插槽 title ，並將插槽裡面的資料 name 透過 屬性product-name 傳遞給父元件。-->
+        <!-- :屬性名稱="值（from 本地資料）" -->
         <slot name="title" :product-name="name"></slot>
       </div>
       <div class="product-body">
@@ -112,6 +114,7 @@
       .component('Product', {
         template: '#product',
         setup() {
+          // 定義元件的本地資料
           const name = ref('AAA')
           const price = ref(1000)
           const content = ref('asdasdasdghsjdf')
