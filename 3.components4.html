@@ -27,7 +27,7 @@
     Vue.createApp({
       setup() {
         const number = ref(100)
-        // 提供一個名為 num 的資料，值是 num
+        // 提供一個名為 num 的資料給子孫層，值是 num
         provide('number', number)
       },
       // 選項式寫法-------------------------------
@@ -40,8 +40,8 @@
       //   return {
       //     number: computed({
       //       get: () => { 
-                  // 這裡一定要用箭頭函式，不然this會是函數本身而找不到東西
-                  // 箭頭函式沒有this，this會指到整個vue
+      // 這裡一定要用箭頭函式，不然this會是函數本身而找不到東西
+      // 箭頭函式沒有this，this會指到整個vue
       //         return this.number
       //       },
       //       set: (value) => {
@@ -54,7 +54,7 @@
       .component('Plus', {
         template: '#plus',
         setup() {
-          // 注入一個名為 num 的資料
+          // 從祖先層注入一個名為 num 的資料
           // 註：provide的名字要對到inject
           const number = inject('number')
 
@@ -64,7 +64,7 @@
 
           return { number, change }
         }
-      // 選項式寫法-------------------------------
+        // 選項式寫法-------------------------------
         // inject: ['number'],
         // methods: {
         //   change () {

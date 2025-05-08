@@ -25,7 +25,7 @@
     integrity='sha512-jDpwxJN+g4BhXLdba5Z1rn2MpR9L5Wp3WVf2dJt5A0mkPHnHLZHZerpyX4JC9bM0pkCL7RmAR8FwOm02h7RKFg=='
     crossorigin='anonymous'></script>
 
-  <!-- 這裡的東西跟.component()有關 -->
+  <!-- 定義模板------------------------------------------------- -->
   <script type="text/x-template" id="plus">
     <input type="button" :value="number" @click="change">
   </script>
@@ -33,6 +33,8 @@
   <script type="text/x-template" id="plus-new">
     <input type="button" :value="n" @click="change">
   </script>
+
+  <!-- 註冊元件------------------------------------------------- -->
   <script>
     const { ref, computed } = Vue
 
